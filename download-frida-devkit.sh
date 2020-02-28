@@ -16,6 +16,9 @@
 #
 # NOTE: This script is designed to just handle Frida Downloads
 #
+
+# A trick I see Github use
+GITHUB_AUTH_HEADER="$(git config --local --get http.https://github.com/.extraheader)"
 FRIDA_VERSION="12.8.12"
 OUTPUT_DIR="CFrida/macos-x86_64/"
 REPO="frida/frida"
@@ -26,7 +29,8 @@ GITHUB="https://api.github.com"
 alias errcho='>&2 echo'
 
 function gh_curl() {
-  curl -H "Accept: application/vnd.github.v3.raw" \
+  curl -H $GITHUB_AUTH_HEADER \
+  	   -H "Accept: application/vnd.github.v3.raw" \
        $@
 }
 
