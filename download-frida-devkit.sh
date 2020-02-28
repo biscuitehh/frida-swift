@@ -8,7 +8,7 @@
 #
 # PREREQUISITES
 #
-# curl, wget, jq
+# curl, jq
 #
 # USAGE
 #
@@ -17,19 +17,24 @@
 # NOTE: This script is designed to just handle Frida Downloads
 #
 
-# A trick I see Github use
-GITHUB_AUTH_HEADER="$(git config --local --get http.https://github.com/.extraheader)"
 FRIDA_VERSION="12.8.12"
 OUTPUT_DIR="CFrida/macos-x86_64/"
 REPO="frida/frida"
 FILE="frida-core-devkit-${FRIDA_VERSION}-macos-x86_64.tar.xz"      # the name of your release asset file, e.g. build.tar.gz
 VERSION="latest"                       # tag name or the word "latest"
 GITHUB="https://api.github.com"
+AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
+
+# Ensure that the GITHUB_TOKEN secret is included
+if [[ -z "$GITHUB_TOKEN" ]]; then
+  echo "Set the GITHUB_TOKEN env variable."
+  exit 1
+fi
 
 alias errcho='>&2 echo'
 
 function gh_curl() {
-  curl -H $GITHUB_AUTH_HEADER \
+  curl -H "${AUTH_HEADER}" \
   	   -H "Accept: application/vnd.github.v3.raw" \
        $@
 }
@@ -47,9 +52,14 @@ if [ "$asset_id" = "null" ]; then
   exit 1
 fi;
 
-wget -q --auth-no-challenge --header='Accept:application/octet-stream' \
-  https://api.github.com/repos/$REPO/releases/assets/$asset_id \
-  -O "${OUTPUT_DIR}/frida.tar.xz"
+ASSET_URL="https://api.github.com/repos/${REPO}/releases/assets/${asset_id}"
+
+curl \
+  -L \
+  -H "${AUTH_HEADER}" \
+  -H "Accept:application/octet-stream" \
+  -o "${OUTPUT_DIR}/frida.tar.xz" \
+  "${ASSET_URL}"
 
 # Extract our Frida Payload
 tar xf "${OUTPUT_DIR}/frida.tar.xz" -C "${OUTPUT_DIR}"
