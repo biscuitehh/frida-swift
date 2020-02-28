@@ -18,7 +18,6 @@
 #
 
 FRIDA_VERSION="12.8.12"
-OUTPUT_DIR="CFrida/macos-x86_64/"
 REPO="frida/frida"
 FILE="frida-core-devkit-${FRIDA_VERSION}-macos-x86_64.tar.xz"      # the name of your release asset file, e.g. build.tar.gz
 VERSION="latest"                       # tag name or the word "latest"
@@ -28,6 +27,12 @@ AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 # Ensure that the GITHUB_TOKEN secret is included
 if [[ -z "$GITHUB_TOKEN" ]]; then
   echo "Set the GITHUB_TOKEN env variable."
+  exit 1
+fi
+
+# Ensure that the OUTPUT_DIR is included
+if [[ -z "$OUTPUT_DIR" ]]; then
+  echo "Set the OUTPUT_DIR env variable."
   exit 1
 fi
 
