@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaScript)
 public class Script: NSObject, NSCopying {

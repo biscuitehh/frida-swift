@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaSpawnDetails)
 public class SpawnDetails: NSObject, NSCopying {

@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 class Marshal {
     static func takeNativeError(_ error: UnsafeMutablePointer<GError>) -> Error {

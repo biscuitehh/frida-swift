@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaProcessDetails)
 public class ProcessDetails: NSObject, NSCopying {

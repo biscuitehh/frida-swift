@@ -1,3 +1,5 @@
 /CFrida/**/*.[ach]
+*.tar.xz
 /Frida.xcodeproj/project.xcworkspace/xcuserdata
 /Frida.xcodeproj/xcuserdata
+.DS_Store

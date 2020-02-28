@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaSession)
 public class Session: NSObject, NSCopying {

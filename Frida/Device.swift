@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaDevice)
 public class Device: NSObject, NSCopying {

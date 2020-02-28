@@ -2,15 +2,15 @@ import Foundation
 
 @dynamicCallable
 public struct RpcFunction {
-    unowned let script: Script
-    let functionName: String
+    public unowned let script: Script
+    public let functionName: String
 
-    init(script: Script, functionName: String) {
+    public init(script: Script, functionName: String) {
         self.script = script
         self.functionName = functionName
     }
 
-    func dynamicallyCall(withArguments args: [Any]) -> RpcRequest {
+    public func dynamicallyCall(withArguments args: [Any]) -> RpcRequest {
         return script.rpcPost(functionName: functionName,
                               requestId: script.nextRequestId, values: args)
     }

@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 class AsyncOperation<CompletionHandler> {
     let completionHandler: CompletionHandler

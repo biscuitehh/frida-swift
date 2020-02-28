@@ -1,4 +1,4 @@
-import CFrida
+import Frida.Frida_Private
 
 @objc(FridaApplicationDetails)
 public class ApplicationDetails: NSObject, NSCopying {

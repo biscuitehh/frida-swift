@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0C2573901CAD790B0075F77A /* frida-core.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C25738D1CAD790B0075F77A /* frida-core.h */; };
+		0C2573901CAD790B0075F77A /* frida-core.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C25738D1CAD790B0075F77A /* frida-core.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C2573911CAD790B0075F77A /* libfrida-core.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C25738E1CAD790B0075F77A /* libfrida-core.a */; };
 		0C2573931CAD990A0075F77A /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2573921CAD990A0075F77A /* Device.swift */; };
 		0C2573951CADA58B0075F77A /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C2573941CADA58B0075F77A /* Error.swift */; };
@@ -67,7 +67,6 @@
 /* Begin PBXFileReference section */
 		0C25738D1CAD790B0075F77A /* frida-core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "frida-core.h"; path = "macos-x86_64/frida-core.h"; sourceTree = "<group>"; };
 		0C25738E1CAD790B0075F77A /* libfrida-core.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libfrida-core.a"; path = "macos-x86_64/libfrida-core.a"; sourceTree = "<group>"; };
-		0C25738F1CAD790B0075F77A /* module.modulemap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; name = module.modulemap; path = "macos-x86_64/module.modulemap"; sourceTree = "<group>"; };
 		0C2573921CAD990A0075F77A /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		0C2573941CADA58B0075F77A /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		0C2573961CADB7C60075F77A /* Runtime.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Runtime.swift; sourceTree = "<group>"; };
@@ -91,6 +90,7 @@
 		0CA4A1311CADF2B1006A32C4 /* Script.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
 		0CA4A1331CADFAD4006A32C4 /* ScriptDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptDelegate.swift; sourceTree = "<group>"; };
 		0CA4A1351CADFEE4006A32C4 /* SignalConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignalConnection.swift; sourceTree = "<group>"; };
+		DC364CDD23E0ED5600219E15 /* Frida.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Frida.modulemap; sourceTree = "<group>"; };
 		FA517E9322C41250009A9A0E /* RpcRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RpcRequest.swift; sourceTree = "<group>"; };
 		FA517E9522C4129A009A9A0E /* RpcFunction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RpcFunction.swift; sourceTree = "<group>"; };
 		FA517E9B22C41380009A9A0E /* TestTarget */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestTarget; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,7 +130,6 @@
 			children = (
 				0C25738D1CAD790B0075F77A /* frida-core.h */,
 				0C25738E1CAD790B0075F77A /* libfrida-core.a */,
-				0C25738F1CAD790B0075F77A /* module.modulemap */,
 			);
 			path = CFrida;
 			sourceTree = "<group>";
@@ -159,6 +158,7 @@
 		0C9289361CA6F06C00FBA302 /* Frida */ = {
 			isa = PBXGroup;
 			children = (
+				DC364CDD23E0ED5600219E15 /* Frida.modulemap */,
 				0C2573941CADA58B0075F77A /* Error.swift */,
 				0C9289371CA6F06C00FBA302 /* Frida.h */,
 				0C9289391CA6F06C00FBA302 /* Info.plist */,
@@ -278,7 +278,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 1030;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = Frida;
 				TargetAttributes = {
 					0C9289331CA6F06C00FBA302 = {
@@ -507,6 +507,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -524,6 +525,7 @@
 					"$(inherited)",
 					"CFrida/macos-x86_64",
 				);
+				MODULEMAP_FILE = Frida/Frida.modulemap;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lbsm",
@@ -532,8 +534,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = re.frida.Frida;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "CFrida/macos-x86_64";
+				SKIP_INSTALL = NO;
+				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
@@ -544,6 +547,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -561,6 +565,7 @@
 					"$(inherited)",
 					"CFrida/macos-x86_64",
 				);
+				MODULEMAP_FILE = Frida/Frida.modulemap;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-lbsm",
@@ -569,8 +574,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = re.frida.Frida;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "CFrida/macos-x86_64";
+				SKIP_INSTALL = NO;
+				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
 			};
@@ -608,6 +614,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
@@ -625,6 +632,7 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
