@@ -237,8 +237,9 @@ public class Script: NSObject, NSCopying {
             }
 
             script.rpcCallbacks.removeValue(forKey: rpcMessage.payload.requestId)
-            return
-        } catch {}
+        } catch {
+            print("error in onMessage, ignoring")
+        }
 
         if let script = connection.instance {
             Runtime.scheduleOnMainThread {
