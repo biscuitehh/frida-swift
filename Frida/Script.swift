@@ -214,7 +214,7 @@ public class Script: NSObject, NSCopying {
             let script = connection.instance!
             let messageDict = message as! [String: Any]
             let payload = messageDict[FridaRpcMessage.CodingKeys.payload.rawValue] as! [Any]
-            let callback = script.rpcCallbacks[rpcMessage.payload.requestId]!
+            let callback = script.rpcCallbacks[rpcMessage.payload.requestId]
             
             if rpcMessage.payload.status == .ok {
                 var result: Any?
@@ -224,7 +224,7 @@ public class Script: NSObject, NSCopying {
                     result = payload[3]
                 }
 
-                callback(.success(value: result))
+                callback?(.success(value: result))
             } else {
                 let errorMessage = payload[3] as! String
                 var stackTraceMaybe: String?
@@ -233,7 +233,7 @@ public class Script: NSObject, NSCopying {
                 }
 
                 let error = Error.rpcError(message: errorMessage, stackTrace: stackTraceMaybe)
-                callback(.error(error))
+                callback?(.error(error))
             }
 
             script.rpcCallbacks.removeValue(forKey: rpcMessage.payload.requestId)
