@@ -33,7 +33,7 @@ public class Script: NSObject, NSCopying {
         onDestroyedHandler = g_signal_connect_data(rawHandle, "destroyed", unsafeBitCast(onDestroyed, to: GCallback.self),
                                                    gpointer(Unmanaged.passRetained(SignalConnection(instance: self)).toOpaque()),
                                                    releaseConnection, GConnectFlags(0))
-        onMessageHandler = g_signal_connect_data(rawHandle, "message", unsafeBitCast(onMessage, to: GCallback.self),
+        onMessageHandler = g_signal_connect_data(rawHandle, "message", unsafeBitCast(onMessageRaw, to: GCallback.self),
                                                  gpointer(Unmanaged.passRetained(SignalConnection(instance: self)).toOpaque()),
                                                  releaseConnection, GConnectFlags(0))
     }
@@ -188,13 +188,23 @@ public class Script: NSObject, NSCopying {
             }
         }
     }
-
-    private let onMessage: MessageHandler = { _, rawMessage, rawData, userData in
+    
+    private let onMessageRaw: MessageHandler = { x, rawMessage, rawData, userData in
         let connection = Unmanaged<SignalConnection<Script>>.fromOpaque(userData).takeUnretainedValue()
+        let messageData = messageDataFromRawMessage(rawMessage)
+        let data: Data? = dataFromRawData(rawData)
 
-        let messageData = Data(bytesNoCopy: UnsafeMutableRawPointer.init(mutating: rawMessage), count: Int(strlen(rawMessage)), deallocator: .none)
-        let message = try! JSONSerialization.jsonObject(with: messageData, options: JSONSerialization.ReadingOptions())
+        if let script = connection.instance {
+            Runtime.scheduleOnMainThread {
+                // Send ScriptDelegate Raw Data Message if opted in
+                script.delegate?.script?(script, didReceiveMessageData: messageData, withData: data)
+            }
+            
+            script.onMessageDecode(x, rawMessage, rawData, userData)
+        }
+    }
 
+    private static func dataFromRawData(_ rawData: OpaquePointer?) -> Data? {
         var data: Data? = nil
         if let rawData = rawData {
             var size: gsize = 0
@@ -207,6 +217,20 @@ public class Script: NSObject, NSCopying {
                 data = Data()
             }
         }
+        return data
+    }
+    
+    private static func messageDataFromRawMessage(_ rawMessage: UnsafePointer<gchar>) -> Data {
+        Data(bytesNoCopy: UnsafeMutableRawPointer.init(mutating: rawMessage), count: Int(strlen(rawMessage)), deallocator: .none)
+    }
+
+    private let onMessageDecode: MessageHandler = { _, rawMessage, rawData, userData in
+        let connection = Unmanaged<SignalConnection<Script>>.fromOpaque(userData).takeUnretainedValue()
+
+        let messageData = messageDataFromRawMessage(rawMessage)
+        let message = try! JSONSerialization.jsonObject(with: messageData, options: JSONSerialization.ReadingOptions())
+
+        var data: Data? = dataFromRawData(rawData)
 
         let decoder = JSONDecoder()
         do {
