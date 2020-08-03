@@ -1,4 +1,5 @@
-import Frida.Frida_Private
+import Foundation
+import CFrida
 
 class Bytes {
     let buffer: Data

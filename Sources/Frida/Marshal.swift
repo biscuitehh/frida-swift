@@ -1,4 +1,10 @@
-import Frida.Frida_Private
+import CFrida
+
+#if !os(iOS)
+    import AppKit
+#else
+    import UIKit
+#endif
 
 class Marshal {
     static func takeNativeError(_ error: UnsafeMutablePointer<GError>) -> Error {
@@ -39,34 +45,6 @@ class Marshal {
         }
     }
 
-    static func imageFromIcon(_ icon: OpaquePointer?) -> NSImage? {
-        if icon == nil {
-            return nil
-        }
-
-        let width = Int(frida_icon_get_width(icon))
-        let height = Int(frida_icon_get_height(icon))
-        let bitsPerComponent = 8
-        let bitsPerPixel = 4 * bitsPerComponent
-        let bytesPerRow = width * (bitsPerPixel / 8)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo: CGBitmapInfo = [.byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)]
-
-        let pixels = frida_icon_get_pixels(icon)
-        var size: gsize = 0
-        let data = g_bytes_get_data(pixels, &size)!
-        let provider = CGDataProvider(dataInfo: UnsafeMutableRawPointer(g_bytes_ref(pixels)), data: data, size: Int(size), releaseData: { info, data, size in
-            g_bytes_unref(OpaquePointer(info))
-        })!
-
-        let shouldInterpolate = false
-        let renderingIntent = CGColorRenderingIntent.defaultIntent
-
-        let image = CGImage(width: width, height: height, bitsPerComponent: bitsPerComponent, bitsPerPixel: bitsPerPixel, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo, provider: provider, decode: nil, shouldInterpolate: shouldInterpolate, intent: renderingIntent)!
-
-        return NSImage(cgImage: image, size: NSSize(width: width, height: height))
-    }
-
     static func strvFromArray(_ array: [String]?) -> (UnsafeMutablePointer<UnsafeMutablePointer<gchar>?>?, gint) {
         var strv: UnsafeMutablePointer<UnsafeMutablePointer<gchar>?>?
         var length: gint
@@ -103,3 +81,35 @@ class Marshal {
         return (envp, length)
     }
 }
+
+#if !os(iOS)
+    extension Marshal {
+        static func imageFromIcon(_ icon: OpaquePointer?) -> NSImage? {
+            if icon == nil {
+                return nil
+            }
+
+            let width = Int(frida_icon_get_width(icon))
+            let height = Int(frida_icon_get_height(icon))
+            let bitsPerComponent = 8
+            let bitsPerPixel = 4 * bitsPerComponent
+            let bytesPerRow = width * (bitsPerPixel / 8)
+            let colorSpace = CGColorSpaceCreateDeviceRGB()
+            let bitmapInfo: CGBitmapInfo = [.byteOrder32Big, CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)]
+
+            let pixels = frida_icon_get_pixels(icon)
+            var size: gsize = 0
+            let data = g_bytes_get_data(pixels, &size)!
+            let provider = CGDataProvider(dataInfo: UnsafeMutableRawPointer(g_bytes_ref(pixels)), data: data, size: Int(size), releaseData: { info, data, size in
+                g_bytes_unref(OpaquePointer(info))
+            })!
+
+            let shouldInterpolate = false
+            let renderingIntent = CGColorRenderingIntent.defaultIntent
+
+            let image = CGImage(width: width, height: height, bitsPerComponent: bitsPerComponent, bitsPerPixel: bitsPerPixel, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo, provider: provider, decode: nil, shouldInterpolate: shouldInterpolate, intent: renderingIntent)!
+
+            return NSImage(cgImage: image, size: NSSize(width: width, height: height))
+        }
+    }
+#endif

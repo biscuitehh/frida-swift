@@ -1,4 +1,11 @@
-import Frida.Frida_Private
+import Foundation
+import CFrida
+
+#if !os(iOS)
+    import AppKit
+#else
+    import UIKit
+#endif
 
 @objc(FridaProcessDetails)
 public class ProcessDetails: NSObject, NSCopying {
@@ -25,14 +32,6 @@ public class ProcessDetails: NSObject, NSCopying {
         return String(cString: frida_process_get_name(handle))
     }
 
-    public var smallIcon: NSImage? {
-        return Marshal.imageFromIcon(frida_process_get_small_icon(handle))
-    }
-
-    public var largeIcon: NSImage? {
-        return Marshal.imageFromIcon(frida_process_get_large_icon(handle))
-    }
-
     public override var description: String {
         return "Frida.ProcessDetails(pid: \(pid), name: \"\(name)\")"
     }
@@ -49,3 +48,15 @@ public class ProcessDetails: NSObject, NSCopying {
         return handle.hashValue
     }
 }
+
+#if !os(iOS)
+    extension ProcessDetails {
+        public var smallIcon: NSImage? {
+            return Marshal.imageFromIcon(frida_process_get_small_icon(handle))
+        }
+
+        public var largeIcon: NSImage? {
+            return Marshal.imageFromIcon(frida_process_get_large_icon(handle))
+        }
+    }
+#endif

@@ -1,4 +1,10 @@
-import Frida.Frida_Private
+import CFrida
+
+#if !os(iOS)
+    import AppKit
+#else
+    import UIKit
+#endif
 
 @objc(FridaApplicationDetails)
 public class ApplicationDetails: NSObject, NSCopying {
@@ -30,14 +36,6 @@ public class ApplicationDetails: NSObject, NSCopying {
         return value != 0 ? value : nil
     }
 
-    public var smallIcon: NSImage? {
-        return Marshal.imageFromIcon(frida_application_get_small_icon(handle))
-    }
-
-    public var largeIcon: NSImage? {
-        return Marshal.imageFromIcon(frida_application_get_large_icon(handle))
-    }
-
     public override var description: String {
         if let pid = self.pid {
             return "Frida.ApplicationDetails(identifier: \"\(identifier)\", name: \"\(name)\", pid: \(pid))"
@@ -58,3 +56,15 @@ public class ApplicationDetails: NSObject, NSCopying {
         return handle.hashValue
     }
 }
+
+#if !os(iOS)
+    extension ApplicationDetails {
+        public var smallIcon: NSImage? {
+            return Marshal.imageFromIcon(frida_application_get_small_icon(handle))
+        }
+
+        public var largeIcon: NSImage? {
+            return Marshal.imageFromIcon(frida_application_get_large_icon(handle))
+        }
+    }
+#endif

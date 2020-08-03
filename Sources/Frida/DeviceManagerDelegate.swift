@@ -1,3 +1,5 @@
+import Foundation
+
 @objc(FridaDeviceManagerDelegate)
 public protocol DeviceManagerDelegate {
     @objc optional func deviceManagerDidChangeDevices(_ manager: DeviceManager)

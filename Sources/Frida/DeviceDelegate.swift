@@ -1,3 +1,5 @@
+import Foundation
+
 @objc(FridaDeviceDelegate)
 public protocol DeviceDelegate {
     @objc optional func deviceLost(_ device: Device)

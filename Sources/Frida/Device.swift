@@ -1,4 +1,10 @@
-import Frida.Frida_Private
+import CFrida
+
+#if !os(iOS)
+    import AppKit
+#else
+    import UIKit
+#endif
 
 @objc(FridaDevice)
 public class Device: NSObject, NSCopying {
@@ -97,10 +103,6 @@ public class Device: NSObject, NSCopying {
 
     public var name: String {
         return String(cString: frida_device_get_name(handle))
-    }
-
-    public var icon: NSImage? {
-        return Marshal.imageFromIcon(frida_device_get_icon(handle))
     }
 
     public var kind: Kind {
@@ -500,3 +502,11 @@ public enum Stdio: Int, CustomStringConvertible {
         }
     }
 }
+
+#if !os(iOS)
+    extension Device {
+        public var icon: NSImage? {
+            return Marshal.imageFromIcon(frida_device_get_icon(handle))
+        }
+    }
+#endif
