@@ -26,7 +26,8 @@ let package = Package(
         ),
         .binaryTarget(
             name: "CFrida",
-            path: "artifacts/CFrida.xcframework"
+            url: "https://github.com/biscuitehh/frida-swift/releases/download/12.11.6/CFrida.xcframework.zip",
+            checksum: "663e2d0003add894a450bc3546184a0ee9b6ae51d6d02bfd3534a75d17290bce"
         )
     ]
 )

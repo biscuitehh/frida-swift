@@ -2,7 +2,7 @@
 
 ## New Frida Download Tool
 
-FRIDA_VERSION=12.11.4
+FRIDA_VERSION=12.11.6
 
 # Don't change these
 FRIDA_MACOS_INTEL_URL="https://github.com/frida/frida/releases/download/${FRIDA_VERSION}/frida-core-devkit-${FRIDA_VERSION}-macos-x86_64.tar.xz"
