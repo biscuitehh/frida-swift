@@ -1,4 +1,9 @@
+#if os(iOS)
+import UIKit
+#else
 import AppKit
+#endif
+
 import Frida_Private
 
 @objc(FridaDevice)
@@ -136,6 +141,15 @@ public class Device: NSObject, NSCopying {
         return String(cString: frida_device_get_name(handle))
     }
 
+#if os(iOS)
+    @objc public lazy var icon: UIImage? = {
+        guard let iconVariant = frida_device_get_icon(handle) else {
+            return nil
+        }
+        let iconDict = Marshal.valueFromVariant(iconVariant) as! [String: Any];
+        return Marshal.iconFromVarDict(iconDict)
+    }()
+#else
     @objc public lazy var icon: NSImage? = {
         guard let iconVariant = frida_device_get_icon(handle) else {
             return nil
@@ -143,6 +157,7 @@ public class Device: NSObject, NSCopying {
         let iconDict = Marshal.valueFromVariant(iconVariant) as! [String: Any];
         return Marshal.iconFromVarDict(iconDict)
     }()
+#endif
 
     public var kind: Kind {
         switch frida_device_get_dtype(handle) {

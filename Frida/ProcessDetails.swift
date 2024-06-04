@@ -1,4 +1,8 @@
+#if os(iOS)
+import UIKit
+#else
 import AppKit
+#endif
 import Frida_Private
 
 @objc(FridaProcessDetails)
@@ -36,12 +40,21 @@ public class ProcessDetails: NSObject, NSCopying {
         return result
     }()
 
+#if os(iOS)
+    @objc public lazy var icons: [UIImage] = {
+        guard let icons = parameters["icons"] as? [[String: Any]] else {
+            return []
+        }
+        return icons.compactMap(Marshal.iconFromVarDict)
+    }()
+#else
     @objc public lazy var icons: [NSImage] = {
         guard let icons = parameters["icons"] as? [[String: Any]] else {
             return []
         }
         return icons.compactMap(Marshal.iconFromVarDict)
     }()
+#endif
 
     public override var description: String {
         return "Frida.ProcessDetails(pid: \(pid), name: \"\(name)\", parameters: \(parameters))"
